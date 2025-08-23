@@ -1,8 +1,10 @@
 from flask import Flask, request, render_template, redirect, url_for
 import sqlite3
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash , check_password_hash
 import os
 import sqlite3
+from flask import session
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "users.db")
@@ -27,9 +29,10 @@ init_db()
 
 
 app = Flask(__name__)
+app.secret_key = "supersecretkey"  # required to use sessions
 
 @app.route("/")
-def home():
+def home(): 
     return render_template("homepage.html")
 
 @app.route("/signup", methods=["POST"])
@@ -51,6 +54,39 @@ def signup():
         return redirect(url_for("success", username=name))
     except sqlite3.IntegrityError:
         return "EMAIL ALREADY REGISTERED"
+
+
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    print("METHOD RECEIVED:", request.method)   # debug
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        print("Form data:", email, password) 
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT name, password FROM users WHERE email=?", (email,))
+            user = cursor.fetchone()
+
+        if user:
+            name, hashed_password = user
+            if check_password_hash(hashed_password, password):
+                session["username"] = name
+                return "loggin babe"
+            else:
+                return "INVALID PASSWORD"
+        else:
+            return "NO SUCH USER"
+
+    # return render_template("homepage.html")
+    return "fuck offwwww"
+
+
+
+
 
 @app.route("/success/<username>")
 def success(username):
