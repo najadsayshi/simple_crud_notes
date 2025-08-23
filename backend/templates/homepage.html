@@ -46,19 +46,18 @@
       <div class="tab-content">
 
         <!-- Login -->
-        <div class="tab-pane fade show active" id="login" role="tabpanel">
-          <form>
-            <div class="mb-3">
-              <label class="form-label">Email address</label>
-              <input type="email" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Password</label>
-              <input type="password" class="form-control">
-            </div>
-            <button class="btn btn-primary w-100">Login</button>
-          </form>
-        </div>
+        <form action="http://127.0.0.1:5000/login" method="POST">
+          <div class="mb-3">
+            <label class="form-label">Email address</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+
 
         <!-- Signup -->
         <div class="tab-pane fade" id="signup" role="tabpanel">
