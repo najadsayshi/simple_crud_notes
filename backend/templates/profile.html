@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Profile</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 280px;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      background: white;
+      border-right: 1px solid #e2e8f0;
+      box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+      overflow-y: auto;
+    }
+
+    .profile-card {
+      background: white;
+      padding: 30px 20px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .profile-pic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 2px solid #cbd5e0;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      color: #1a202c;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      color: #718096;
+      margin-bottom: 25px;
+      font-size: 0.9rem;
+    }
+
+    .info-section {
+      background-color: #f7fafc;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: left;
+      border: 1px solid #e2e8f0;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      color: #4a5568;
+    }
+
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-item i {
+      margin-right: 10px;
+      width: 16px;
+      color: #4a5568;
+    }
+
+    .info-item span {
+      display: block; /* Show text */
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn span {
+      display: inline; /* Show button text */
+    }
+
+    .btn-primary {
+      background-color: #2d3748;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1a202c;
+    }
+
+    .btn-secondary {
+      background-color: white;
+      color: #4a5568;
+      border: 1px solid #cbd5e0;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f7fafc;
+      border-color: #a0aec0;
+    }
+
+    .btn-danger {
+      background-color: #e53e3e;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c53030;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 20px;
+      background-color: #edf2f7;
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        width: 60px;
+      }
+      
+      .main-content {
+        margin-left: 60px;
+      }
+
+      .profile-pic {
+        width: 40px;
+        height: 40px;
+      }
+
+      h1 {
+        font-size: 0.8rem;
+      }
+
+      .subtitle {
+        font-size: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="profile-card">
+      <img src="{{ profilepic }}" alt="Profile Picture" class="profile-pic">
+      <h1>{{ username }}</h1>
+      <div class="subtitle">Welcome!</div>
+      
+      <div class="info-section">
+        <div class="info-item">
+          <i>📧</i>
+          <span>{{ email }}</span>
+        </div>
+        <div class="info-item">
+          <i>📅</i>
+          <span>Member since 2024</span>
+        </div>
+        <div class="info-item">
+          <i>📍</i>
+          <span>Earth 🌍</span>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <a href="#" class="btn btn-primary">
+          ✏️<span> Edit Profile</span>
+        </a>
+        <a href="#" class="btn btn-secondary">
+          ⚙️<span> Settings</span>
+        </a>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">
+          🚪<span> Logout</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<div class="main-content">
+<div class="notes-section">
+  <h2>My Notes</h2>
+
+  <form action="{{ url_for('addnotes') }}" method="POST">
+    <input type="text" name="title" placeholder="Title" required><br>
+    <textarea name="content" placeholder="Write your note..." required></textarea><br>
+    <button type="submit">Add Note</button>
+    <HR></HR>
+  </form>
+
+  {% if notes %}
+    <ul style="list-style-type: none; padding: 0; margin: 0; background: #f8fbff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+  {% for note in notes %}
+    <li style="padding: 16px; border-bottom: 1px solid #dce7f5;">
+      <strong style="color: #1d4ed8; font-size: 15px; display: block; margin-bottom: 6px;">
+        Note {{ loop.index }}: {{ note[1] }}
+      </strong>
+      <p style="color: #0f172a; margin: 0 0 8px 0; line-height: 1.4;">
+        {{ note[2] }}
+      </p>
+      <small style="color: #475569; font-size: 12px;">
+        🕒 {{ note[3] }} &nbsp; | &nbsp; 🆔 {{ note[0] }}
+      </small>
+    </li>
+  {% endfor %}
+</ul>
+
+  {% else %}
+    <p>No notes yet.</p>
+  {% endif %}
+</div>
+
+
+</div>
+
+</div>
+
+
+
+
+
+</body>
+</html>
