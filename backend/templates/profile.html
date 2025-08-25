@@ -233,6 +233,7 @@
       <p style="color: #0f172a; margin: 0 0 8px 0; line-height: 1.4;">
         {{ note[2] }}
       </p>
+      <a href="{{ url_for('edit_note', note_id=note[0]) }}">Edit</a>
       <small style="color: #475569; font-size: 12px;">
         🕒 {{ note[3] }} &nbsp; | &nbsp; 🆔 {{ note[0] }}
       </small>
