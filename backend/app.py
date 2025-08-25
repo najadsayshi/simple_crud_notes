@@ -164,7 +164,7 @@ def profile():
 
 #     return render_template("profile.html",notes=notes)
 
-
+#adding notes
 @app.route("/addnotes" , methods = ["POST"])
 def addnotes():
     if "user_id" not in session:
@@ -182,6 +182,36 @@ def addnotes():
         conn.commit()
 
     return redirect(url_for("profile"))
+
+
+
+#updating notes
+
+@app.route("/edit/<int:note_id>",methods=["GET","POST"])
+def edit_note(note_id):
+    print("=== EDIT FUNCTION CALLED ===")
+    print(f"Method: {request.method}")
+    print(f"Note ID: {note_id}")
+    conn=sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        new_title = request.form["title"]
+        new_content = request.form["content"]
+        print(f"Trying to update with: {new_title}, {new_content}")  # Add this
+        cursor.execute("UPDATE notes  SET title=?,content=? where id=?",(new_title,new_content,note_id))
+        print(f"Rows affected: {cursor.rowcount}")  # Add this line
+        conn.commit()
+        conn.close()
+        return redirect(url_for("profile"))
+    cursor.execute("SELECT * FROM notes WHERE id=?", (note_id,))
+    note = cursor.fetchone()
+    conn.close()
+    return render_template('edit_note.html',note=note)
+
+    
+    
+
 # Serve uploaded files
 @app.route("/uploads/<filename>")
 def uploaded_file(filename):
